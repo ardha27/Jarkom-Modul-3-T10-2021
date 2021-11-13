@@ -10,6 +10,170 @@ Anggota Kelompok T10:<br>
 
 # Soal <a name="Soal"></a>
 
+### 1. Luffy bersama Zoro berencana membuat peta tersebut dengan kriteria EniesLobby sebagai DNS Server, Jipangu sebagai DHCP Server, Water7 sebagai Proxy Server
+
+Menambahkan command pada file bernama `.bashrc` pada folder root dengan command <br>
+
+**Water 7**
+
+```
+apt-get update -y
+apt-get install nano -y
+apt-get install squid -y
+apt-get install apache2 -y
+apt-get install apache2-utils -y
+bash /root/script.sh
+```
+
+**EnniesLobby 7**
+
+```
+apt-get update -y
+apt-get install nano -y
+apt-get install bind9 -y
+bash /root/script.sh
+```
+
+**Jipangu**
+
+```
+apt-get update -y
+apt-get install nano -y
+apt-get install isc-dhcp-server -y
+bash /root/script.sh
+```
+
+**Skypie**
+
+```
+apt-get update -y
+apt-get install nano -y
+apt-get install apache2 -y
+apt-get install php -y
+apt-get install libapache2-mod-php7.0
+apt-get install wget -y
+apt-get install unzip -y
+bash /root/script.sh
+```
+
+**TottoLand**
+
+```
+apt-get update -y
+apt-get install nano -y
+bash /root/script.sh
+```
+
+**Alabasta**
+
+```
+apt-get update -y
+apt-get install nano -y
+apt-get install lynx -y
+bash /root/script.sh
+```
+
+**Loguetown**
+
+```
+apt-get update -y
+apt-get install nano -y
+apt-get install lynx -y
+bash /root/script.sh
+```
+
+Dokumentasi hasil
+
+<img src="https://github.com/ardha27/Jarkom-Modul-3-T10-2021/blob/main/SS%20Hasil/1a.png">
+<img src="https://github.com/ardha27/Jarkom-Modul-3-T10-2021/blob/main/SS%20Hasil/1b.png">
+
+### 2. dan Foosha sebagai DHCP Relay
+
+Menambahkan command pada file bernama `.bashrc` pada folder root dengan command <br>
+
+```
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE -s 192.216.0.0/16
+apt-get update -y
+apt-get install nano -y
+apt-get install isc-dhcp-relay -y
+```
+
+Setelah itu kita mengedit isi file pada path `/etc/sysctl.conf` dengan command
+
+```
+net.ipv4.ip_forward=1
+```
+
+dan juga pada file `/etc/default/isc-dhcp-relay`
+
+```
+SERVERS="192.216.2.4"
+INTERFACES="eth1 eth2 eth3"
+```
+
+Dokumentasi hasil
+<img src="https://github.com/ardha27/Jarkom-Modul-3-T10-2021/blob/main/SS%20Hasil/2.png">
+
+### 3. Semua client yang ada HARUS menggunakan konfigurasi IP dari DHCP Server. Client yang melalui Switch1 mendapatkan range IP dari [prefix IP].1.20 - [prefix IP].1.99 dan [prefix IP].1.150 - [prefix IP].1.169
+
+mengkonfigurasi file `/etc/default/isc-dhcp-server` dengan command
+
+```
+INTERFACES="eth0"
+```
+
+setelah itu pada file `/etc/dhcp/dhcpd.conf` juga diubah konfigurasinya dengan command
+
+```
+subnet '192.216.2.0' netmask '255.255.255.248' {
+}
+
+subnet '192.216.1.0' netmask '255.255.255.0' {
+    range '192.216.1.20' '192.216.1.99';
+    range '192.216.1.150' '192.216.1.169';
+    option routers '192.216.1.1';
+    option broadcast-address '192.216.1.255';
+    option domain-name-servers '192.216.2.2';
+    default-lease-time '360';
+    max-lease-time '7200';
+}
+```
+
+Dokumentasi hasil
+<img src="https://github.com/ardha27/Jarkom-Modul-3-T10-2021/blob/main/SS%20Hasil/3a.png">
+<img src="https://github.com/ardha27/Jarkom-Modul-3-T10-2021/blob/main/SS%20Hasil/3b.png">
+
+### 4. Client yang melalui Switch3 mendapatkan range IP dari [prefix IP].3.30 - [prefix IP].3.50
+
+Pada file `/etc/dhcp/dhcpd.conf` juga diubah konfigurasinya dengan command
+
+```
+subnet '192.216.3.0' netmask '255.255.255.0' {
+    range '192.216.3.30' '192.216.3.50';
+    option routers '192.216.3.1';
+    option broadcast-address '192.216.1.255';
+    option domain-name-servers '192.216.2.2';
+    default-lease-time '720';
+    max-lease-time '7200';
+}
+```
+
+Dokumentasi hasil
+<img src="https://github.com/ardha27/Jarkom-Modul-3-T10-2021/blob/main/SS%20Hasil/4a.png">
+<img src="https://github.com/ardha27/Jarkom-Modul-3-T10-2021/blob/main/SS%20Hasil/4b.png">
+
+### 5. Client mendapatkan DNS dari EniesLobby dan client dapat terhubung dengan internet melalui DNS tersebut.
+
+Telah diselesaikan pada solusi no 3 dan 4 yaitu pada `option domain-name-servers '192.216.2.2'`
+
+Dokumentasi hasil
+<img src="https://github.com/ardha27/Jarkom-Modul-3-T10-2021/blob/main/SS%20Hasil/5a.png">
+<img src="https://github.com/ardha27/Jarkom-Modul-3-T10-2021/blob/main/SS%20Hasil/5b.png">
+
+### 6. Lama waktu DHCP server meminjamkan alamat IP kepada Client yang melalui Switch1 selama 6 menit sedangkan pada client yang melalui Switch3 selama 12 menit. Dengan waktu maksimal yang dialokasikan untuk peminjaman alamat IP selama 120 menit.
+
+Juga telah diselesaikan pada solusi no 3 dan 4 yaitu pada `default-lease-time dan max-lease-time`
+
 ### 9. Agar transaksi jual beli lebih aman dan pengguna website ada dua orang, proxy dipasang autentikasi user proxy dengan enkripsi MD5 dengan dua username, yaitu luffybelikapalyyy dengan password luffy_yyy dan zorobelikapalyyy dengan password zoro_yyy
 
 **_Server Water7_** <br>
