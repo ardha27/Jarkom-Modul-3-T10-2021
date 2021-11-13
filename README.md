@@ -174,6 +174,75 @@ Dokumentasi hasil
 
 Juga telah diselesaikan pada solusi no 3 dan 4 yaitu pada `default-lease-time dan max-lease-time`
 
+### 7. Luffy dan Zoro berencana menjadikan Skypie sebagai server untuk jual beli kapal yang dimilikinya dengan alamat IP yang tetap dengan IP 192.216.3.69
+
+Setting terlebih dahulu alamat ip address Skypie di DHCP server Jipangu agar alamatnya tetap dan tidak berubah , menggunakan `hardware ethernet 56:bf:61:e6:34:31` yang didapat dari koneksi antara node DHCP relay dan Skypie dan mendeklarasikan fixed addressnya `192.216.3.69`. Kemudian di Skypie akan diatur juga agar selalu memiliki alamat ip address yang sama.
+
+**Server Jipangu**
+```
+host Skypie {
+    hardware ethernet 56:bf:61:e6:34:31;
+    fixed-address 192.216.3.69;
+}
+service isc-dhcp-server restart
+```
+
+**Server Skypie**
+```
+auto eth0
+iface eth0 inet dhcp
+hwaddress ether 56:bf:61:e6:34:31
+```
+
+### 8.  Loguetown digunakan sebagai client Proxy agar transaksi jual beli dapat terjamin keamanannya, juga untuk mencegah kebocoran data transaksi. Pada Loguetown, proxy harus bisa diakses dengan nama jualbelikapal.yyy.com dengan port yang digunakan adalah 5000
+
+Sebelum mengatur squid.conf , terlebih dahulu kita akan membuat websitenya di DNS server EnniesLobby sesuai yang diajarkan di modul 2 , website akan mengarah ke IP Water7
+***Ennies Lobby***
+```
+echo '
+zone "jualbelikapal.t10.com" {
+	type master;
+	file "/etc/bind/jarkom/jualbelikapal.t10.com";
+};
+' > /etc/bind/named.conf.local
+
+mkdir /etc/bind/jarkom
+cp /etc/bind/db.local /etc/bind/jarkom/jualbelikapal.t10.com
+
+echo '
+$TTL    604800
+@       IN      SOA     jualbelikapal.t10.com. root.jualbelikapal.t10.com.(
+                     2021102501         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      jualbelikapal.t10.com.
+@       IN      A       192.216.2.3 ; IP Water7
+' > /etc/bind/jarkom/jualbelikapal.t10.com
+
+service bind9 restart
+```
+
+***Water7*** 
+Pada water7 sebagai proxy server akan mengatur port yang digunakan sesuai dengan soal yaitu port `5000` yang diatur pada file squid.conf.bak
+```
+echo '
+http_port 5000
+visible_hostname Water7
+' > /etc/squid/squid.conf
+
+service squid restart
+```
+
+***Loguetown***
+Loguetown sebagai client harus mendeklarasikan terlebih dahulu website yang akan digunakan menggunakan proxy dari water7 dengan menggunakan command
+```
+export http_proxy="http://jualbelikapal.t10.com:5000"
+```
+Untuk mengexport website agar bisa diakses di klien Loguetown
+
 ### 9. Agar transaksi jual beli lebih aman dan pengguna website ada dua orang, proxy dipasang autentikasi user proxy dengan enkripsi MD5 dengan dua username, yaitu luffybelikapalyyy dengan password luffy_yyy dan zorobelikapalyyy dengan password zoro_yyy
 
 **_Server Water7_** <br>
