@@ -193,6 +193,7 @@ auto eth0
 iface eth0 inet dhcp
 hwaddress ether 56:bf:61:e6:34:31
 ```
+<img src="https://github.com/ardha27/Jarkom-Modul-3-T10-2021/blob/main/SS%20Hasil/7.png">
 
 ### 8.  Loguetown digunakan sebagai client Proxy agar transaksi jual beli dapat terjamin keamanannya, juga untuk mencegah kebocoran data transaksi. Pada Loguetown, proxy harus bisa diakses dengan nama jualbelikapal.yyy.com dengan port yang digunakan adalah 5000
 
@@ -242,6 +243,8 @@ Loguetown sebagai client harus mendeklarasikan terlebih dahulu website yang akan
 export http_proxy="http://jualbelikapal.t10.com:5000"
 ```
 Untuk mengexport website agar bisa diakses di klien Loguetown
+
+<img src="https://github.com/ardha27/Jarkom-Modul-3-T10-2021/blob/main/SS%20Hasil/8a.png">
 
 ### 9. Agar transaksi jual beli lebih aman dan pengguna website ada dua orang, proxy dipasang autentikasi user proxy dengan enkripsi MD5 dengan dua username, yaitu luffybelikapalyyy dengan password luffy_yyy dan zorobelikapalyyy dengan password zoro_yyy
 
